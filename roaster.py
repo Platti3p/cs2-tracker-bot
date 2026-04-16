@@ -2,17 +2,9 @@ import discord
 from openai import OpenAI
 import random
 import re
+import os
 import json
 from datetime import datetime
-
-def cargar_json(path):
-    try:
-        with open(path, "r") as f:
-            return json.load(f)
-    except:
-        return {}
-
-import os
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -63,7 +55,8 @@ def normalizar(nombre):
 # ========================
 def obtener_ranking():
     try:
-        stats = cargar_json("stats.json")
+        with open("stats.json", "r") as f:
+            stats = json.load(f)
     except:
         return []
 
@@ -73,7 +66,8 @@ def obtener_ranking():
 
 def contar_partidas():
     try:
-        matches = cargar_json("matches.json")
+        with open("matches.json", "r") as f:
+            matches = json.load(f)
     except:
         return {}
 
@@ -90,7 +84,8 @@ def contar_partidas():
 # ========================
 def calcular_wl():
     try:
-        matches = cargar_json("matches.json")
+        with open("matches.json", "r") as f:
+            matches = json.load(f)
     except:
         return {}
 
@@ -432,7 +427,8 @@ def analizar(data, texto_original):
 # ========================
 def calcular_rachas():
     try:
-        matches = cargar_json("matches.json")
+        with open("matches.json", "r") as f:
+            matches = json.load(f)
     except:
         return {}
 
@@ -575,7 +571,8 @@ async def on_message(message):
             j1 = normalizar(m[0][0].strip())
             j2 = normalizar(m[0][1].strip())
 
-            matches = cargar_json("matches.json")
+            with open("matches.json","r") as f:
+                matches = json.load(f)
 
             s = {
                 j1.lower(): {"k":0,"d":0,"adr":0,"kast":0,"g":0},
@@ -612,7 +609,8 @@ async def on_message(message):
         # ANALISIS
         # ========================
         if any(p in contenido for p in ["analiza","data","game","analisis","tirame data"]):
-            last = cargar_json("last_match.json")
+            with open("last_match.json","r") as f:
+                last=json.load(f)
 
             data={p["name"]:p for p in last["players"]}
             txt=f"{last.get('mapa','Mapa')} {last.get('resultado','0-0')}"
